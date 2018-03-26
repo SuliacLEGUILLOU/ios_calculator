@@ -93,6 +93,26 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(button[indexPath.item])
+        
+        if let number = Int(button[indexPath.item]){
+            if label.text == "0" {
+                label.text = String(number)
+            } else {
+                label.text = label.text! + String(number)
+            }
+        } else if button[indexPath.item] == "AC" {
+            label.text = "0"
+        } else if button[indexPath.item] == "+/-" && label.text != "0" {
+            if label.text!.hasPrefix("-") {
+                label.text!.remove(at: label.text!.startIndex)
+            } else {
+                label.text = "-" + label.text!
+            }
+        }
+        
+        /*try {
+            label.text = label.text + Int(button[indexPath.item])
+        }*/
     }
 }
 
