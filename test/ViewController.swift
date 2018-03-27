@@ -138,6 +138,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 break
             }
             if result == nil || result!.overflow {
+                previous_entry = "0"
+                operation = ""
                 label.text = "Err"
             } else {
                 label.text = String(result!.partialValue)
