@@ -14,6 +14,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     private let reuseid = "reussi"
     
+    private var previous_entry = ""
+    private var operation = ""
+    
     private let button: [String] = ["AC", "+/-", "", "/", "7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "0", "", "", "="]
     
     private let label:  UILabel = {
@@ -76,6 +79,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         cel.item = button[indexPath.item]
         
+        if indexPath.item < 3 {
+            cel.backgroundColor = .gray
+        } else if indexPath.item % 4 == 3 {
+            cel.backgroundColor = .orange
+        }
+        
         return cel
     }
     
@@ -92,27 +101,52 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(button[indexPath.item])
+        print("[DEBUG]", button[indexPath.item])
         
         if let number = Int(button[indexPath.item]){
-            if label.text == "0" {
+            if label.text == "0" || label.text == "Err" {
                 label.text = String(number)
             } else {
                 label.text = label.text! + String(number)
             }
         } else if button[indexPath.item] == "AC" {
             label.text = "0"
-        } else if button[indexPath.item] == "+/-" && label.text != "0" {
+        } else if button[indexPath.item] == "+/-" && label.text != "0" && label.text != "Err" {
             if label.text!.hasPrefix("-") {
                 label.text!.remove(at: label.text!.startIndex)
             } else {
                 label.text = "-" + label.text!
             }
+        } else if button[indexPath.item] == "=" && previous_entry != "" {
+            var result: (partialValue: Int, overflow: Bool)?
+            
+            print("operating \(previous_entry) \(operation) \(label.text!)")
+            switch (operation) {
+            case "+":
+                result = Int(previous_entry)?.addingReportingOverflow(Int(label.text!)!)
+                break
+            case "-":
+                result = Int(previous_entry)?.subtractingReportingOverflow(Int(label.text!)!)
+                break
+            case "*":
+                result = Int(previous_entry)?.multipliedReportingOverflow(by: Int(label.text!)!)
+                break
+            case "/":
+                result = Int(previous_entry)?.dividedReportingOverflow(by: Int(label.text!)!)
+                break
+            default:
+                break
+            }
+            if result == nil || result!.overflow {
+                label.text = "Err"
+            } else {
+                label.text = String(result!.partialValue)
+            }
+        } else {
+            previous_entry = label.text!
+            operation = button[indexPath.item]
+            label.text = "0"
         }
-        
-        /*try {
-            label.text = label.text + Int(button[indexPath.item])
-        }*/
     }
 }
 

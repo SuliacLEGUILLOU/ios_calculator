@@ -30,6 +30,9 @@ final class ButtonCell: UICollectionViewCell {
         addSubview(label)
         label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.black.cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {
